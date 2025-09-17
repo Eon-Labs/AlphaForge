@@ -18,7 +18,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 # Set TensorFlow seed
-tf.set_random_seed(0)
+tf.random.set_seed(0)  # TensorFlow 2.x compatible
 
 
 # Work for multiprocessing pool: compute reward

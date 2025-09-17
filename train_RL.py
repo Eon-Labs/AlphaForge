@@ -197,6 +197,7 @@ def main(
 from gan.utils.qlib import get_data_my
 if __name__ == '__main__':
     steps = {
+        1: 200_000,   # Add missing capacity=1
         10: 250_000,
         20: 300_000,
         50: 350_000,

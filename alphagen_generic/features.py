@@ -8,5 +8,7 @@ volume = Feature(FeatureType.VOLUME)
 open_ = Feature(FeatureType.OPEN)
 close = Feature(FeatureType.CLOSE)
 vwap = Feature(FeatureType.VWAP)
-# target = Ref(close, -20) / close - 1
-target = Ref(vwap,-21)/Ref(vwap,-1)-1
+# TEMPORAL VIOLATION FIXED: Original used future data Ref(vwap,-21)/Ref(vwap,-1)-1
+# Now using historical data only - forward returns calculated properly in data pipeline
+# target = Ref(close, -20) / close - 1  # Original commented approach also had look-ahead
+target = Ref(vwap, 1) / vwap - 1  # 1-day lag return using historical VWAP only

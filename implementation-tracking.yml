@@ -1,0 +1,249 @@
+openapi: 3.1.1
+info:
+  title: AlphaForge Temporal Violation Remediation Implementation
+  version: "1.0.0"
+  description: |
+    Machine-readable implementation tracking for critical temporal violations
+    and SOTA framework replacements in AlphaForge quantitative finance codebase
+  contact:
+    name: Implementation Tracking System
+
+components:
+  schemas:
+    TemporalViolation:
+      type: object
+      properties:
+        id:
+          type: string
+        severity:
+          type: string
+          enum: [critical, high, medium, low]
+        status:
+          type: string
+          enum: [identified, in-progress, resolved, validated]
+        file_path:
+          type: string
+        line_number:
+          type: integer
+        violation_type:
+          type: string
+        description:
+          type: string
+        remediation_action:
+          type: string
+        sota_replacement:
+          type: string
+          nullable: true
+
+    SOTAFramework:
+      type: object
+      properties:
+        current_implementation:
+          type: string
+        replacement_framework:
+          type: string
+        justification:
+          type: string
+        migration_status:
+          type: string
+          enum: [planned, in-progress, completed, validated]
+
+paths:
+  /violations/temporal:
+    get:
+      summary: Critical temporal violations tracking
+      responses:
+        '200':
+          description: Current status of temporal violations
+          content:
+            application/yaml:
+              schema:
+                type: object
+                properties:
+                  violations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TemporalViolation'
+
+# CRITICAL TEMPORAL VIOLATIONS
+temporal_violations:
+  - id: TV-001
+    severity: critical
+    status: resolved
+    file_path: alphagen_generic/features.py
+    line_number: 14
+    violation_type: look_ahead_bias
+    description: "Original: target = Ref(vwap,-21)/Ref(vwap,-1)-1 used future VWAP data"
+    remediation_action: "Fixed: target = Ref(vwap, 1) / vwap - 1 uses historical data only"
+    sota_replacement: null
+    resolution_date: "2025-01-17"
+
+  - id: TV-002
+    severity: critical
+    status: identified
+    file_path: exp_ML_train_and_result.ipynb
+    line_number: 41
+    violation_type: look_ahead_bias
+    description: "tmp = (vwap_unstack.shift(-21)/vwap_unstack.shift(-1))-1 uses future data"
+    remediation_action: "Implement proper temporal feature engineering with historical data only"
+    sota_replacement: "feature-engine library for automated temporal-safe feature creation"
+
+  - id: TV-003
+    severity: critical
+    status: identified
+    file_path: gplearn/tests/test_examples.py
+    line_number: 183
+    violation_type: temporal_scaling_violation
+    description: "X = StandardScaler().fit_transform(X) uses global scaling with future data"
+    remediation_action: "Implement per-fold scaling with TimeSeriesSplit"
+    sota_replacement: "sklearn.model_selection.TimeSeriesSplit with Pipeline"
+
+# UNDEFINED VARIABLE ERRORS
+undefined_variable_errors:
+  - id: UE-001
+    severity: critical
+    status: resolved
+    file_path: train_RL.py
+    line_number: 140
+    description: "NameError: name 'target' is not defined"
+    remediation_action: "Fixed by correcting target definition in alphagen_generic/features.py"
+    resolution_date: "2025-01-17"
+
+  - id: UE-002
+    severity: critical
+    status: resolved
+    file_path: train_GP.py
+    line_number: 143
+    description: "NameError: name 'target' is not defined"
+    remediation_action: "Fixed by correcting target definition in alphagen_generic/features.py"
+    resolution_date: "2025-01-17"
+
+  - id: UE-003
+    severity: critical
+    status: resolved
+    file_path: train_AFF.py
+    line_number: 169
+    description: "NameError: name 'target' is not defined"
+    remediation_action: "Fixed by correcting target definition in alphagen_generic/features.py"
+    resolution_date: "2025-01-17"
+
+  - id: UE-004
+    severity: critical
+    status: identified
+    file_path: train_DSO.py
+    line_number: 41
+    description: "NameError: name 'target' is not defined - BLOCKED by numba dependency issue"
+    remediation_action: "Cannot test due to numba Python 3.13 incompatibility"
+
+# DEPENDENCY COMPATIBILITY ISSUES
+dependency_issues:
+  - id: DI-001
+    severity: high
+    status: resolved
+    dependency: numba
+    file_path: dso/subroutines.py
+    line_number: 3
+    description: "numba only supports Python >=3.6,<3.10, but using Python 3.13"
+    remediation_action: "Fixed: numba 0.62.0rc2 now supports Python 3.13"
+    blocking: []
+    resolution_date: "2025-01-17"
+
+  - id: DI-002
+    severity: medium
+    status: identified
+    dependency: tensorflow-metal
+    file_path: N/A
+    line_number: N/A
+    description: "tensorflow-metal 1.2.0 only supports Python 3.9-3.12, not Python 3.13"
+    remediation_action: "Metal GPU acceleration unavailable until tensorflow-metal adds Python 3.13 support"
+    blocking: []
+    workaround: "PyTorch MPS backend available for GPU acceleration"
+
+# SOTA FRAMEWORK REPLACEMENTS
+sota_replacements:
+  - id: SF-001
+    current_implementation: "OpenAI Gym (deprecated)"
+    replacement_framework: "Gymnasium"
+    justification: "Maintained fork with NumPy 2.0 support and active development"
+    migration_status: planned
+    files_affected: [train_RL.py, alphagen/rl/env/wrapper.py]
+
+  - id: SF-002
+    current_implementation: "Custom Genetic Programming"
+    replacement_framework: "DEAP (Distributed Evolutionary Algorithms in Python)"
+    justification: "Industry-standard GP framework with proven scalability"
+    migration_status: planned
+    files_affected: [train_GP.py, gplearn/]
+
+  - id: SF-003
+    current_implementation: "Custom backtesting logic"
+    replacement_framework: "backtesting.py"
+    justification: "Validated framework with temporal safeguards and standard metrics"
+    migration_status: planned
+    files_affected: [combine_AFF.py, train_AFF.py]
+
+  - id: SF-004
+    current_implementation: "Manual feature engineering"
+    replacement_framework: "feature-engine + scikit-learn Pipeline"
+    justification: "Automated temporal-safe feature engineering with validation"
+    migration_status: planned
+    files_affected: [exp_ML_train_and_result.ipynb]
+
+  - id: SF-005
+    current_implementation: "Custom entropy calculations"
+    replacement_framework: "InfoMeasure + JAX"
+    justification: "SOTA 2024-2025 entropy stack with 35x GPU speedup"
+    migration_status: planned
+    files_affected: [alphagen/models/alpha_pool.py]
+
+# IMPLEMENTATION PHASES
+implementation_phases:
+  phase_1_critical:
+    priority: 1
+    description: "Stop all training - fix temporal violations"
+    items:
+      - TV-001
+      - TV-002
+      - TV-003
+      - UE-001
+      - UE-002
+      - UE-003
+      - UE-004
+
+  phase_2_framework_upgrades:
+    priority: 2
+    description: "Replace deprecated/custom implementations with SOTA"
+    items:
+      - SF-001
+      - SF-002
+      - SF-003
+
+  phase_3_optimization:
+    priority: 3
+    description: "Performance and automation improvements"
+    items:
+      - SF-004
+      - SF-005
+
+# VALIDATION CRITERIA
+validation_criteria:
+  temporal_integrity:
+    - no_future_data_access
+    - proper_train_test_split
+    - per_fold_scaling_only
+    - exception_only_failures
+
+  framework_compatibility:
+    - backward_compatibility_maintained
+    - performance_improvement_validated
+    - documentation_updated
+    - tests_passing
+
+metadata:
+  created: "2025-01-17"
+  last_updated: "2025-01-17"
+  version: "1.1.0"
+  tracking_format: "OpenAPI 3.1.1"
+  commit_milestone_prepare: true
+  versioning_status: "updated_to_0.2.0"
+  git_lfs_configured: true

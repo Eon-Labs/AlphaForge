@@ -1,0 +1,25 @@
+[project]
+name = "alphaforge"
+version = "0.2.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "baostock>=0.8.9",
+    "commentjson>=0.9.0",
+    "fire>=0.7.1",
+    "gym>=0.26.2",
+    "matplotlib>=3.10.6",
+    "numba>=0.61.0",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "prettytable>=3.16.0",
+    "qlib>=0.0.2.dev20",
+    "sb3-contrib>=2.7.0",
+    "scikit-learn>=1.7.2",
+    "stable-baselines3>=2.7.0",
+    "tensorboard>=2.20.0",
+    "tensorflow>=2.20.0",
+    "torch>=2.8.0",
+    "tqdm>=4.67.1",
+]
