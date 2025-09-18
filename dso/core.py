@@ -56,16 +56,17 @@ class DeepSymbolicOptimizer():
 
         # Clear the cache and reset the compute graph
         Program.clear_cache()
-        tf.reset_default_graph()
+
+        # Configure TF for single-threaded execution (TF 2.x compatible)
+        tf.config.threading.set_intra_op_parallelism_threads(1)
+        tf.config.threading.set_inter_op_parallelism_threads(1)
 
         # Generate objects needed for training and set seeds
         self.pool = self.make_pool_and_set_task()
-        self.set_seeds() # Must be called _after_ resetting graph and _after_ setting task
+        self.set_seeds() # Must be called _after_ setting task
 
-        # Limit TF to single thread to prevent "resource not available" errors in parallelized runs
-        session_config = tf.ConfigProto(intra_op_parallelism_threads=1,
-                                        inter_op_parallelism_threads=1)
-        self.sess = tf.Session(config=session_config)
+        # TF 2.x uses eager execution by default, no session needed
+        self.sess = None  # Placeholder for compatibility
 
         # Setup logdirs and output files
         self.output_file = self.make_output_file()
@@ -193,7 +194,7 @@ class DeepSymbolicOptimizer():
         shifted_seed = seed + zlib.adler32(task_name.encode("utf-8"))
 
         # Set the seeds using the shifted seed
-        tf.set_random_seed(shifted_seed)
+        tf.random.set_seed(shifted_seed)
         np.random.seed(shifted_seed)
         random.seed(shifted_seed)
 

@@ -125,7 +125,7 @@ def main(
 ):
     reseed_everything(seed)
 
-    device = torch.device('cuda:0')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     close = Feature(FeatureType.CLOSE)
 
     from alphagen_generic.features import open_

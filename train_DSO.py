@@ -34,7 +34,7 @@ def main(
     if isinstance(seeds,str):
         seeds = eval(seeds)
     for seed in seeds:
-        tf.set_random_seed(seed)
+        tf.random.set_seed(seed)
         reseed_everything(seed)
         returned = get_data_by_year(
             train_start = 2010,train_end=train_end,valid_year=train_end+1,test_year =train_end+2,

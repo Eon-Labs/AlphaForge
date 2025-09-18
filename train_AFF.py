@@ -218,7 +218,7 @@ def main(
 
             l_entropy = 0
 
-            device = 'cuda:0'
+            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
         print(f"seed:{seed},name:{cfg.name}")
 
@@ -357,7 +357,8 @@ def main(
 
             del x,y,weights
             gc.collect()
-            torch.cuda.empty_cache()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
             t+=1
 
         empty_blds = Builders(0,max_len=cfg.max_len,n_actions=SIZE_ACTION)

@@ -48,20 +48,20 @@ class PolicyOptimizer(ABC):
 
     """    
 
-    def _init(self, 
-            sess : tf.Session,
+    def _init(self,
             policy : Policy,
-            debug : int = 0,    
+            debug : int = 0,
             summary : bool = False,
             # Optimizer hyperparameters
             optimizer : str = 'adam',
             learning_rate : float = 0.001,
             # Loss hyperparameters
             entropy_weight : float = 0.005,
-            entropy_gamma : float = 1.0) -> None:
+            entropy_gamma : float = 1.0,
+            sess = None) -> None:  # TF 2.x doesn't use sessions
         '''Parameters
         ----------
-        sess : tf.Session
+        sess : (unused, TF 2.x doesn't use sessions)
             TensorFlow Session object.
 
         policy : dso.policy.Policy
@@ -202,8 +202,7 @@ class PolicyOptimizer(ABC):
             self.summaries = tf.summary.merge_all()
 
 
-    def _setup_policy_optimizer(self, 
-            sess : tf.Session,
+    def _setup_policy_optimizer(self,
             policy : Policy,
             debug : int = 0,    
             summary : bool = False,

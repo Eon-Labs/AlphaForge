@@ -43,12 +43,12 @@ class Policy(ABC):
     of this distribution to generate discrete objects with high rewards.
     """    
 
-    def __init__(self, 
-            sess : tf.Session,
+    def __init__(self,
             prior : JointPrior,
             state_manager : StateManager,
-            debug : int = 0,  
-            max_length : int = 30) -> None:
+            debug : int = 0,
+            max_length : int = 30,
+            sess = None) -> None:  # TF 2.x doesn't use sessions
         '''Parameters
         ----------
         sess : tf.Session
