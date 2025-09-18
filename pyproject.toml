@@ -1,6 +1,6 @@
 [project]
 name = "alphaforge"
-version = "0.4.0"
+version = "0.5.0"
 description = "Quantitative alpha factor discovery framework with reinforcement learning and deep symbolic optimization"
 readme = "README.md"
 requires-python = ">=3.12"

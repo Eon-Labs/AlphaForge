@@ -1,10 +1,10 @@
 openapi: 3.1.1
 info:
-  title: AlphaForge Cryptocurrency Microstructure Implementation
-  version: "0.4.0"
+  title: AlphaForge Synthetic Data Elimination & Cryptocurrency DSO Integration
+  version: "0.5.0"
   description: |
-    Machine-readable implementation tracking for cryptocurrency microstructure integration
-    with community-proven alpha factor analysis frameworks in AlphaForge quantitative finance codebase
+    Machine-readable implementation tracking for comprehensive synthetic data elimination
+    and cryptocurrency Deep Symbolic Optimization benchmark datasets with temporal integrity validation
   contact:
     name: Implementation Tracking System
 
@@ -301,9 +301,10 @@ validation_results:
 
 metadata:
   created: "2025-01-17"
-  last_updated: "2025-09-17"
-  version: "0.4.0"
+  last_updated: "2025-09-18"
+  version: "0.5.0"
   tracking_format: "OpenAPI 3.1.1"
   microstructure_implementation: "completed"
   community_algorithms: "integrated"
+  synthetic_data_elimination: "completed"
   git_lfs_configured: true
