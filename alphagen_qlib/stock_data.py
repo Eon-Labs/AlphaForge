@@ -111,45 +111,58 @@ class StockData:
             return self._load_exprs_baostock(exprs)
 
     def _load_exprs_baostock(self, exprs: Union[str, List[str]]) -> pd.DataFrame:
-        """Fallback implementation using baostock for basic OHLCV data"""
+        """Crypto market data implementation using gapless-crypto-data"""
         if not isinstance(exprs, list):
             exprs = [exprs]
 
-        print(f"Using baostock fallback for expressions: {exprs}")
+        print(f"Loading crypto market data for expressions: {exprs}")
 
-        # Create synthetic data for basic features (this should be replaced with actual baostock implementation)
-        dates = pd.date_range(start=self._start_time, end=self._end_time, freq='D')
-        instruments = self._instrument if isinstance(self._instrument, list) else [self._instrument]
+        try:
+            from .crypto_data import CryptoDataProvider
 
-        # Create MultiIndex for dates and instruments
-        index = pd.MultiIndex.from_product([dates, instruments], names=['date', 'instrument'])
+            # Map instruments to crypto symbols
+            instruments = self._instrument if isinstance(self._instrument, list) else [self._instrument]
+            crypto_symbols = []
+            for instrument in instruments:
+                if instrument.upper() in ['CSI300', 'CSI500', 'CSI1000']:
+                    # Map stock indices to major crypto pairs
+                    crypto_symbols.extend(['BTCUSDT', 'ETHUSDT', 'ADAUSDT'])
+                else:
+                    # Assume direct crypto symbol mapping
+                    symbol = instrument.upper()
+                    if not symbol.endswith('USDT'):
+                        symbol += 'USDT'
+                    crypto_symbols.append(symbol)
 
-        # Create basic OHLCV data (synthetic for now - replace with actual baostock data)
-        import numpy as np
-        np.random.seed(42)  # For reproducible synthetic data
+            # Remove duplicates while preserving order
+            crypto_symbols = list(dict.fromkeys(crypto_symbols))
 
-        data = {}
-        for expr in exprs:
-            # Create synthetic data based on expression type
-            if 'close' in expr.lower():
-                data[expr] = np.random.normal(100, 10, len(index))
-            elif 'open' in expr.lower():
-                data[expr] = np.random.normal(100, 10, len(index))
-            elif 'high' in expr.lower():
-                data[expr] = np.random.normal(105, 10, len(index))
-            elif 'low' in expr.lower():
-                data[expr] = np.random.normal(95, 10, len(index))
-            elif 'volume' in expr.lower():
-                data[expr] = np.random.normal(1000000, 100000, len(index))
-            elif 'vwap' in expr.lower():
-                data[expr] = np.random.normal(100, 10, len(index))
-            else:
-                # Default to price-like data
-                data[expr] = np.random.normal(100, 10, len(index))
+            # Initialize crypto data provider
+            provider = CryptoDataProvider(
+                data_path="crypto_data",
+                symbols=crypto_symbols,
+                timeframe="1h" if self.freq == 'hour' else "1d",
+                device=self.device
+            )
 
-        df = pd.DataFrame(data, index=index)
-        print(f"Generated synthetic data shape: {df.shape}")
-        return df
+            # Load data and get expressions
+            crypto_df = provider.get_expressions_data(
+                expressions=exprs,
+                symbols=crypto_symbols,
+                start_date=self._start_time,
+                end_date=self._end_time
+            )
+
+            print(f"Loaded crypto market data shape: {crypto_df.shape}")
+            print(f"Date range: {crypto_df.index.get_level_values(1).min()} to {crypto_df.index.get_level_values(1).max()}")
+            print(f"Symbols: {crypto_df.index.get_level_values(0).unique().tolist()}")
+
+            return crypto_df
+
+        except Exception as e:
+            print(f"Warning: Failed to load crypto data: {e}")
+            print("Exception-only failure principle: raising exception instead of fallback")
+            raise RuntimeError(f"Crypto data loading failed: {e}") from e
     
     def _get_data(self) -> Tuple[torch.Tensor, pd.Index, pd.Index]:
         features = ['$' + f.name.lower() for f in self._features]

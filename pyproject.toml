@@ -1,13 +1,15 @@
 [project]
 name = "alphaforge"
-version = "0.3.0"
+version = "0.4.0"
 description = "Quantitative alpha factor discovery framework with reinforcement learning and deep symbolic optimization"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "alphalens-reloaded>=0.4.6",
     "baostock>=0.8.9",
     "commentjson>=0.9.0",
     "fire>=0.7.1",
+    "gapless-crypto-data>=2.6.0",
     "gymnasium>=1.2.0",
     "matplotlib>=3.10.6",
     "numba>=0.61.0",
